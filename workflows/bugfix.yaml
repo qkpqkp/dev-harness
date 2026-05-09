@@ -1,0 +1,15 @@
+name: bugfix
+description: Minimal bugfix workflow with reproduction and regression coverage.
+steps:
+  - task
+  - plan
+  - context
+  - reproduce
+  - implement
+  - verify
+  - review
+  - summarize
+constraints:
+  prefer_regression_test: true
+  minimal_patch: true
+  avoid_unrelated_refactor: true

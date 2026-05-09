@@ -1,0 +1,14 @@
+name: feature
+description: Standard scoped feature workflow.
+steps:
+  - task
+  - plan
+  - context
+  - implement
+  - verify
+  - review
+  - summarize
+constraints:
+  minimal_patch: true
+  require_plan: true
+  require_verification: true

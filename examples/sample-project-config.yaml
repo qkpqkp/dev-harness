@@ -1,0 +1,21 @@
+project:
+  name: sample-project
+  purpose: Example configuration for a project using Dev Harness.
+
+checks:
+  required:
+    - pnpm typecheck
+    - pnpm lint
+    - pnpm test
+  optional:
+    - pnpm build
+
+agent:
+  plan_file: .agent-harness/runs/<run-id>/plan.md
+  context_file: .agent-harness/runs/<run-id>/context.md
+  decisions_file: .agent-harness/DECISIONS.md
+
+workflow:
+  default: feature
+  require_verification: true
+  require_diff_review: true

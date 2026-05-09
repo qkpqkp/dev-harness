@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.env
+.env.*
+
+# Runtime artifacts
+.agent-harness/runs/
+.agent-harness/current-run
+
+# Python prototype/runtime files
+__pycache__/
+*.py[cod]
+*.sqlite
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

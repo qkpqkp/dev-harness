@@ -1,0 +1,12 @@
+name: pr-review
+description: Diff-only review workflow.
+steps:
+  - collect_diff
+  - summarize_changed_files
+  - review_correctness
+  - review_tests
+  - review_risks
+  - summarize_findings
+constraints:
+  diff_only: true
+  findings_first: true
