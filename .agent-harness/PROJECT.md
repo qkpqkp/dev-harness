@@ -24,11 +24,11 @@ No external dependencies. Pure TypeScript/Node.js.
 - `src/customization/templates.ts` — default templates + agent configs
 - `.agent-harness/` — runtime directory, not source code
 - `prompts/` — external agent prompts (plan, implement, review-diff, fix-test-failure, sentry-fix)
-- `bugpilot/` — legacy Python prototype, do not modify
+- `prompts/` — external agent prompts (plan, implement, review-diff, fix-test-failure, sentry-fix)
 
 ## AI Collaboration Notes
 
 - Keep context concise.
 - Prefer minimal patches.
 - Record important decisions in DECISIONS.md.
-- Do not modify bugpilot/ unless a task explicitly targets it.
+- No external dependencies.

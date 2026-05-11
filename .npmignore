@@ -1,0 +1,19 @@
+# Source (published as compiled JS in dist/)
+src/
+.github/
+
+# Dev files
+tsconfig.json
+pnpm-lock.yaml
+.agent-harness/
+
+# Agent config files are project-specific, not for npm
+CLAUDE.md
+GEMINI.md
+.cursorrules
+AGENTS.md
+
+# Docs and prompts
+docs/
+prompts/
+templates/

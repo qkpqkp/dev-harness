@@ -11,4 +11,4 @@ Document the commands agents should run before finishing work.
 
 ## Prohibitions
 
-- bugpilot/ — legacy Python prototype, do not modify
+<!-- List files, directories, or patterns agents must not modify. -->

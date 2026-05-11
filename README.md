@@ -141,6 +141,6 @@ Then fill in:
 - `.agent-harness/DECISIONS.md` for durable decisions.
 - `AGENTS.md` for repo-level coding-agent instructions.
 
-## Legacy BugPilot Prototype
+## Legacy Note
 
-The `bugpilot/` Python directory is preserved as the original Sentry-driven error-fix prototype. The long-term direction is to express that flow as a `sentry-fix` harness workflow rather than a standalone heavy automation platform.
+The original BugPilot Python prototype has been removed. Its concepts may resurface as a `sentry-fix` harness workflow in the future.

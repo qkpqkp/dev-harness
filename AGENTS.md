@@ -82,9 +82,9 @@ as the execution plan. Update it when the scope changes materially.
 - Prompt changes should update the relevant prompt file and docs when behavior changes.
 - New commands should include README usage and at least one artifact example.
 
-## Existing Prototype
+## Legacy Note
 
-The `bugpilot/` directory is a preserved Python prototype for Sentry error ingestion and AI-assisted fixes. Treat it as legacy/reference material unless a task explicitly targets it.
+The original BugPilot Python prototype has been removed. Its concepts may resurface as a `sentry-fix` harness workflow in the future.
 
 # Agent Instructions
 
