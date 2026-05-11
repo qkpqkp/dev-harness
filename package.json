@@ -1,0 +1,22 @@
+{
+  "name": "dev-harness",
+  "version": "0.1.0",
+  "description": "CLI-first personal AI development workflow harness.",
+  "type": "module",
+  "bin": {
+    "devh": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "dev": "tsx src/cli.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

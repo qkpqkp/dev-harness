@@ -1,0 +1,15 @@
+name: sentry-fix
+description: Production error workflow for future Sentry integration.
+steps:
+  - error_report
+  - stack_trace_extraction
+  - context_discovery
+  - reproduction_attempt
+  - regression_test
+  - minimal_patch
+  - verification
+  - review
+  - pr_summary
+constraints:
+  no_api_in_v0: true
+  require_human_review: true
