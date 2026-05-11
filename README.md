@@ -1,14 +1,12 @@
 # Dev Harness
 
-Dev Harness is a lightweight, CLI-first personal AI development workflow toolbox.
+Dev Harness is a lightweight, CLI-first personal AI development workflow harness.
 
 It exists to make AI-assisted coding more disciplined: plan first, load focused context, keep implementation scope tight, run verification, review the diff, and leave reusable artifacts for the next session.
 
-This repository started from a small BugPilot Sentry-fix prototype. That idea now becomes one workflow inside a broader personal development harness.
-
 ## What This Is
 
-- A local CLI for generating AI development artifacts.
+- A local CLI for generating AI development artifacts with soft enforcement.
 - A repeatable workflow model for Codex, Claude Code, Cursor, Aider, and similar coding agents.
 - A small TypeScript/Node.js tool that standardizes project context, plans, checks, reviews, and summaries.
 - A foundation for AI-native development workflow, not prompt-only experimentation.
@@ -21,13 +19,42 @@ This repository started from a small BugPilot Sentry-fix prototype. That idea no
 - Not an AI IDE.
 - Not a tool that lets agents run indefinitely without engineering constraints.
 
+## Architecture
+
+The codebase has three layers:
+
+### Layer 1: Philosophy (`src/philosophy/`)
+
+Immutable workflow principles embedded as code. These define how AI-assisted development should work. Never modified by users — copied into `.agent-harness/philosophy.md` at init time so agents always have access.
+
+Core principles: plan before you edit, minimal patches, verify after every change, review the diff against plan scope, leave checkpoints, record decisions, do not expand scope.
+
+### Layer 2: Mechanism (`src/mechanism/`)
+
+The engine that implements the philosophy:
+
+- **Lifecycle management**: Run states (`planned → in_progress → reviewed → summarized`) tracked in `.agent-harness/runs/<id>/status`
+- **Artifact validation**: Soft checks — `devh plan` warns if scope or non-goals are empty but doesn't block
+- **Context collection**: Git state, project structure, keyword-based file discovery, harness project notes
+- **Verification**: Auto-detects package.json scripts, pytest, .NET; also reads custom commands from CHECKS.md
+- **Review with scope comparison**: `devh review` compares changed files against plan scope and flags out-of-scope changes
+
+### Layer 3: Customization (`src/customization/`)
+
+Default templates that users can override:
+
+- `PROJECT.md` — project context and architecture notes
+- `CHECKS.md` — verification commands and prohibitions
+- `DECISIONS.md` — durable cross-session decisions
+
 ## Why It Exists
 
 AI coding sessions often repeat the same setup cost: explaining the project, restating constraints, deciding checks, reviewing scope, and summarizing what changed. Dev Harness turns those repeated steps into durable files:
 
-- `.agent-harness/PROJECT.md`
-- `.agent-harness/CHECKS.md`
-- `.agent-harness/DECISIONS.md`
+- `.agent-harness/philosophy.md` — immutable principles (copied from Layer 1)
+- `.agent-harness/PROJECT.md` — project context
+- `.agent-harness/CHECKS.md` — verification commands
+- `.agent-harness/DECISIONS.md` — cross-session decisions
 - `.agent-harness/runs/<run-id>/plan.md`
 - `.agent-harness/runs/<run-id>/context.md`
 - `.agent-harness/runs/<run-id>/verification.md`
@@ -66,23 +93,25 @@ v0 does not call an LLM API. It prepares artifacts that AI coding agents can rea
 ## Standard Workflow
 
 ```text
-task -> plan -> context -> implement -> verify -> review -> fix -> summarize
+task -> plan -> context -> implement -> verify -> review -> summarize
 ```
 
-Example:
+Each step creates or updates an artifact in `.agent-harness/runs/<run-id>/`. The lifecycle is tracked via a `status` file:
 
-```bash
-devh init-project
-devh plan "fix login redirect bug"
-devh context "fix login redirect bug"
+- `planned` — plan created, awaiting implementation
+- `in_progress` — context loaded, implementation started
+- `reviewed` — diff reviewed with scope comparison
+- `summarized` — run complete
 
-# Give the run folder to Codex, Claude Code, Cursor, Aider, or another agent.
-# Ask it to implement only the approved plan.
+## Soft Enforcement
 
-devh verify
-devh review
-devh summarize
-```
+The harness uses soft enforcement, not hard blocks:
+
+- `devh plan` warns if scope or non-goals sections are empty
+- `devh review` compares changed files against plan scope and flags out-of-scope changes
+- `devh verify` runs all detected checks and records results
+
+All warnings are advisory. The real enforcement comes from the philosophy document that agents read and follow.
 
 ## Working With Coding Agents
 
@@ -103,10 +132,12 @@ Run this in any project:
 devh init-project
 ```
 
+This creates the `.agent-harness/` directory with PROJECT.md, CHECKS.md, DECISIONS.md, RUNS.md, and philosophy.md. It also suggests content for AGENTS.md.
+
 Then fill in:
 
 - `.agent-harness/PROJECT.md` for architecture and domain context.
-- `.agent-harness/CHECKS.md` for project-specific verification.
+- `.agent-harness/CHECKS.md` for project-specific verification commands and prohibitions.
 - `.agent-harness/DECISIONS.md` for durable decisions.
 - `AGENTS.md` for repo-level coding-agent instructions.
 

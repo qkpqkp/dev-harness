@@ -2,15 +2,21 @@
 
 Foundation Harness is the idea that AI-assisted development should be structured like disciplined engineering work, not one-off chat.
 
-The core asset is not a clever prompt. The core asset is a workflow harness that makes useful behavior repeatable:
+The core asset is not a clever prompt. The core asset is a workflow harness that makes useful behavior repeatable.
 
-- Load project context deliberately.
-- Decompose the task before editing.
-- Constrain execution scope.
-- Prefer minimal patches.
-- Verify with real checks.
-- Review the diff.
-- Leave checkpoints for future sessions.
+## Three-Layer Architecture
+
+### Layer 1: Philosophy (Immutable)
+
+The principles are embedded in the codebase and copied into `.agent-harness/philosophy.md` at init time. They are not meant to be edited by users. They define the invariant rules of the workflow.
+
+### Layer 2: Mechanism (The Engine)
+
+The mechanism implements the philosophy through CLI commands and file artifacts. It creates runs, collects context, runs verification, compares scope, and writes summaries. It uses soft enforcement — warnings, not blocks.
+
+### Layer 3: Customization (User Control)
+
+Users fill in PROJECT.md, CHECKS.md, and DECISIONS.md. These are their preferences and project-specific data. The mechanism reads them but doesn't enforce their format.
 
 ## Context Loading
 
@@ -46,9 +52,11 @@ AI agents are most useful when the constraints are explicit:
 
 The harness treats verification as a required artifact, not an afterthought. A failed check is useful information. A missing check is also useful information and should be recorded.
 
+CHECKS.md lets users add project-specific commands that `devh verify` will run alongside auto-detected ones.
+
 ## Review
 
-Diff review catches hidden behavior changes, missing tests, and scope drift. The default review mode is diff-only because broad reviews waste context and encourage unrelated changes.
+Diff review catches hidden behavior changes, missing tests, and scope drift. The default review includes scope comparison — changed files are checked against the plan's scope section and flagged if they fall outside it.
 
 ## Checkpoints
 
@@ -60,5 +68,7 @@ Run artifacts make work resumable:
 - `verification.md`
 - `review.md`
 - `summary.md`
+
+A `status` file tracks the run lifecycle: planned → in_progress → reviewed → summarized.
 
 These files reduce repeated explanation cost across Codex, Claude Code, Cursor, Aider, and future tools.

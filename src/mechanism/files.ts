@@ -1,6 +1,6 @@
+import path from "node:path";
 import { constants } from "node:fs";
 import { access, mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
-import path from "node:path";
 
 export async function exists(filePath: string): Promise<boolean> {
   try {
@@ -31,9 +31,11 @@ export async function listDirs(dirPath: string): Promise<string[]> {
   if (!(await exists(dirPath))) {
     return [];
   }
-
   const entries = await readdir(dirPath, { withFileTypes: true });
-  return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
 }
 
 export async function isFile(filePath: string): Promise<boolean> {

@@ -1,7 +1,0 @@
-# Verification
-
-## Summary
-
-## Detection
-
-## Results

@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import { commandContext } from "./commands/context.js";
 import { commandInitProject } from "./commands/init-project.js";
 import { commandPlan } from "./commands/plan.js";
+import { commandContext } from "./commands/context.js";
+import { commandVerify } from "./commands/verify.js";
 import { commandReview } from "./commands/review.js";
 import { commandSummarize } from "./commands/summarize.js";
-import { commandVerify } from "./commands/verify.js";
-import { logError, logInfo } from "./core/logger.js";
+import { logInfo, logWarn } from "./mechanism/logger.js";
 
 type CommandHandler = (args: string[]) => Promise<void>;
 
@@ -18,18 +18,26 @@ const commands: Record<string, CommandHandler> = {
   summarize: commandSummarize,
 };
 
+function logError(message: string): void {
+  console.error(`error: ${message}`);
+}
+
 function printHelp(): void {
   logInfo(`devh - personal AI development workflow harness
 
 Usage:
   devh init-project
   devh plan "task description"
-  devh context "task description"
+  devh context ["task description"]
   devh verify
   devh review
   devh summarize
 
-v0 generates workflow artifacts only. It does not call LLM APIs or mutate remote services.`);
+v0 generates workflow artifacts and enforces a disciplined flow.
+It does not call LLM APIs.
+
+Workflow: plan -> context -> implement -> verify -> review -> summarize
+Run init-project first to set up the .agent-harness directory.`);
 }
 
 async function main(): Promise<void> {

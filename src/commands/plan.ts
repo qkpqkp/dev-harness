@@ -1,7 +1,7 @@
-import path from "node:path";
-import { writeText } from "../core/files.js";
-import { logInfo } from "../core/logger.js";
-import { createRun } from "../core/runs.js";
+import { createRun } from "../mechanism/lifecycle.js";
+import { writeTask, writePlan, validatePlan } from "../mechanism/artifacts.js";
+import { logInfo, logWarn } from "../mechanism/logger.js";
+import { formatWarnings } from "../mechanism/artifacts.js";
 
 export async function commandPlan(args: string[]): Promise<void> {
   const task = args.join(" ").trim();
@@ -12,56 +12,19 @@ export async function commandPlan(args: string[]): Promise<void> {
   const cwd = process.cwd();
   const run = await createRun(cwd, task);
 
-  await writeText(
-    path.join(run.dir, "task.md"),
-    `# Task
+  await writeTask(run.dir, task);
+  await writePlan(run.dir, task);
 
-${task}
-`,
-  );
+  const warnings = await validatePlan(run.dir);
+  if (warnings.length > 0) {
+    logWarn("Plan validation:");
+    logInfo(formatWarnings(warnings));
+  }
 
-  await writeText(
-    path.join(run.dir, "plan.md"),
-    `# Plan
-
-## Goal
-
-${task}
-
-## Scope
-
-- 
-
-## Non-goals
-
-- 
-
-## Affected Areas
-
-- 
-
-## Proposed Steps
-
-1. 
-
-## Risks
-
-- 
-
-## Validation
-
-- 
-
-## Rollback Plan
-
-- 
-
-## Questions / Assumptions
-
-- 
-`,
-  );
-
-  logInfo(`created run: ${path.relative(cwd, run.dir)}`);
-  logInfo("Edit plan.md before implementation when the task is non-trivial.");
+  logInfo(`created run: ${run.id}`);
+  logInfo(`status: planned`);
+  logInfo("");
+  logInfo("Next steps:");
+  logInfo("  1. Edit plan.md to fill in scope, non-goals, and steps before implementing.");
+  logInfo("  2. Run: devh context");
 }

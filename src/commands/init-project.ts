@@ -1,49 +1,21 @@
 import path from "node:path";
-import { exists, writeText } from "../core/files.js";
-import { logInfo, logWarn } from "../core/logger.js";
-import { HARNESS_DIR, harnessPath } from "../core/runs.js";
+import { exists, writeText } from "../mechanism/files.js";
+import { logInfo } from "../mechanism/logger.js";
+import { HARNESS_DIR, harnessPath } from "../mechanism/lifecycle.js";
+import { PRINCIPLES_MD } from "../philosophy/content.js";
+import {
+  PROJECT_TEMPLATE,
+  CHECKS_TEMPLATE,
+  DECISIONS_TEMPLATE,
+  RUNS_TEMPLATE,
+  AGENT_CONFIGS,
+} from "../customization/templates.js";
 
 const projectFiles: Record<string, string> = {
-  "PROJECT.md": `# Project
-
-## Purpose
-
-Describe what this project does and who it serves.
-
-## Architecture Notes
-
-- Add the important modules, boundaries, and data flow here.
-
-## AI Collaboration Notes
-
-- Keep context concise.
-- Prefer minimal patches.
-- Record important decisions in DECISIONS.md.
-`,
-  "CHECKS.md": `# Checks
-
-Document the commands agents should run before finishing work.
-
-## Required
-
-- Add project-specific test, lint, and typecheck commands here.
-
-## Optional
-
-- Add slower or environment-dependent checks here.
-`,
-  "DECISIONS.md": `# Decisions
-
-Record durable project decisions that future AI sessions should not rediscover.
-
-## Entries
-
-`,
-  "RUNS.md": `# Runs
-
-Generated workflow runs are indexed here.
-
-`,
+  "PROJECT.md": PROJECT_TEMPLATE,
+  "CHECKS.md": CHECKS_TEMPLATE,
+  "DECISIONS.md": DECISIONS_TEMPLATE,
+  "RUNS.md": RUNS_TEMPLATE,
 };
 
 export async function commandInitProject(): Promise<void> {
@@ -59,14 +31,26 @@ export async function commandInitProject(): Promise<void> {
     logInfo(`created: ${path.relative(cwd, filePath)}`);
   }
 
-  if (!(await exists(path.join(cwd, "AGENTS.md")))) {
-    logWarn("No AGENTS.md found. Add one so coding agents load this repo's workflow constraints.");
+  await writeText(harnessPath(cwd, "philosophy.md"), PRINCIPLES_MD);
+  logInfo(`created: ${path.relative(cwd, harnessPath(cwd, "philosophy.md"))}`);
+
+  logInfo("");
+  logInfo("Agent config files:");
+  for (const config of AGENT_CONFIGS) {
+    const filePath = path.join(cwd, config.filename);
+    if (await exists(filePath)) {
+      logInfo(`  exists: ${config.filename} (${config.description}) — consider adding devh workflow reference`);
+    } else {
+      await writeText(filePath, config.content);
+      logInfo(`  created: ${config.filename} (${config.description})`);
+    }
   }
 
-  logInfo(`
-Next steps:
-  devh plan "describe the task"
-  devh context "describe the task"
+  logInfo("");
+  logInfo(`Next steps:
+  1. Edit .agent-harness/PROJECT.md with your project context.
+  2. Edit .agent-harness/CHECKS.md with your verification commands.
+  3. Run: devh plan "describe the task"
 
 Harness directory: ${HARNESS_DIR}/`);
 }

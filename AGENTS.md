@@ -1,6 +1,36 @@
-# AGENTS.md
+# Agent Instructions
 
-This repository is a personal AI development harness: a lightweight, CLI-first workflow toolbox for AI-assisted software development.
+This project uses Dev Harness for AI-assisted development workflow.
+
+## Dev Harness Workflow
+
+Read `.agent-harness/philosophy.md` for the full set of principles. Key points:
+
+1. **Plan before you edit.** Create or read the plan in `.agent-harness/runs/<current>/plan.md` before making changes.
+2. **Context first.** Run `devh context` and read the output before touching files.
+3. **Scope is a contract.** Only implement what is in the plan scope. If you find more work, record it as a new task — do not fold it in.
+4. **Verify after changes.** Run `devh verify` and address any failures before proceeding.
+5. **Review the diff.** Run `devh review` and check for out-of-scope changes.
+6. **Record decisions in** `.agent-harness/DECISIONS.md`.
+
+## Hard Rules
+
+- Do not implement anything outside the plan scope.
+- Do not skip verification.
+- Do not skip diff review.
+- If scope is unclear, ask before proceeding.
+- Update docs and tests when behavior changes.
+
+## Quick Reference
+
+```
+devh init-project          # Set up .agent-harness/ directory
+devh plan "task"           # Create a run and plan.md
+devh context               # Collect git, structure, and harness context
+devh verify                # Run checks (auto-detected + CHECKS.md)
+devh review                # Diff review with scope comparison
+devh summarize             # Close run, generate summary
+```
 
 ## Product Boundary
 
@@ -35,6 +65,13 @@ For complex tasks, use:
 ```
 
 as the execution plan. Update it when the scope changes materially.
+
+## Key Mechanisms
+
+- **Lifecycle states**: `planned → in_progress → reviewed → summarized`. Stored in `.agent-harness/runs/<id>/status`.
+- **Scope validation**: `devh plan` warns if scope or non-goals are empty. `devh review` compares changed files against plan scope.
+- **CHECKS.md integration**: Users can list custom commands in CHECKS.md that `devh verify` will run alongside auto-detected ones.
+- **Philosophy anchoring**: `devh init-project` copies immutable principles into `.agent-harness/philosophy.md` so agents always have access.
 
 ## Documentation Requirements
 

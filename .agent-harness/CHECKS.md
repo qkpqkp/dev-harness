@@ -4,8 +4,11 @@ Document the commands agents should run before finishing work.
 
 ## Required
 
-- Add project-specific test, lint, and typecheck commands here.
+- `pnpm typecheck`
+- `pnpm build`
 
 ## Optional
 
-- Add slower or environment-dependent checks here.
+## Prohibitions
+
+- bugpilot/ — legacy Python prototype, do not modify

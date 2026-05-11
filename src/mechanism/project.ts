@@ -1,5 +1,5 @@
-import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
+import { readdir, readFile } from "node:fs/promises";
 import { exists, isFile } from "./files.js";
 
 export type PackageInfo = {
@@ -7,7 +7,9 @@ export type PackageInfo = {
   scripts: Record<string, string>;
 };
 
-export async function detectPackageManager(cwd: string): Promise<PackageInfo["packageManager"]> {
+export async function detectPackageManager(
+  cwd: string,
+): Promise<PackageInfo["packageManager"]> {
   if (await exists(path.join(cwd, "pnpm-lock.yaml"))) return "pnpm";
   if (await exists(path.join(cwd, "yarn.lock"))) return "yarn";
   if (await exists(path.join(cwd, "package-lock.json"))) return "npm";
@@ -28,20 +30,34 @@ export async function readPackageInfo(cwd: string): Promise<PackageInfo> {
   return { packageManager, scripts: parsed.scripts ?? {} };
 }
 
-export function packageRunCommand(manager: PackageInfo["packageManager"], script: string): string {
+export function packageRunCommand(
+  manager: PackageInfo["packageManager"],
+  script: string,
+): string {
   if (manager === "pnpm") return `pnpm ${script}`;
   if (manager === "yarn") return `yarn ${script}`;
   return `npm run ${script}`;
 }
 
-export async function summarizeTree(cwd: string, maxEntries = 80): Promise<string[]> {
-  const ignored = new Set([".git", "node_modules", "dist", "__pycache__", ".agent-harness"]);
+export async function summarizeTree(
+  cwd: string,
+  maxEntries = 80,
+): Promise<string[]> {
+  const ignored = new Set([
+    ".git",
+    "node_modules",
+    "dist",
+    "__pycache__",
+    ".agent-harness",
+  ]);
   const out: string[] = [];
 
   async function walk(dir: string, depth: number): Promise<void> {
     if (out.length >= maxEntries || depth > 2) return;
     const entries = await readdir(dir, { withFileTypes: true });
-    for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+    for (const entry of entries.sort((a, b) =>
+      a.name.localeCompare(b.name),
+    )) {
       if (ignored.has(entry.name) || out.length >= maxEntries) continue;
       const fullPath = path.join(dir, entry.name);
       const rel = path.relative(cwd, fullPath).replaceAll("\\", "/");

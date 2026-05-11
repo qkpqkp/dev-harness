@@ -8,7 +8,11 @@ export type CommandResult = {
   timedOut: boolean;
 };
 
-export async function runCommand(command: string, cwd: string, timeoutMs = 120_000): Promise<CommandResult> {
+export async function runCommand(
+  command: string,
+  cwd: string,
+  timeoutMs = 120_000,
+): Promise<CommandResult> {
   return new Promise((resolve) => {
     const child = spawn(command, {
       cwd,
