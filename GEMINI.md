@@ -1,7 +1,7 @@
 # Gemini Instructions
 
 This project uses Dev Harness for AI-assisted development workflow.
-
+<!-- devh:start -->
 ## Dev Harness Workflow
 
 Read `.agent-harness/philosophy.md` for the full set of principles. Key points:
@@ -31,3 +31,9 @@ devh verify                # Run checks (auto-detected + CHECKS.md)
 devh review                # Diff review with scope comparison
 devh summarize             # Close run, generate summary
 ```
+
+<!-- devh:end -->
+
+
+
+
