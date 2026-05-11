@@ -2,6 +2,7 @@
   "name": "dev-harness",
   "version": "0.1.0",
   "description": "CLI-first personal AI development workflow harness.",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "devh": "./dist/cli.js"
