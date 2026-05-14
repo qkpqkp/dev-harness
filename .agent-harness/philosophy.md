@@ -2,11 +2,11 @@
 
 These principles are immutable. They define how AI-assisted development should work when using this harness.
 
-## 1. Plan Before You Edit
+## 1. Match Workflow Weight To Risk
 
-Never jump straight into code. Write a plan first. The plan states what will change, what will not change, and how to verify the change is correct.
+Never jump straight into code. First decide how much process the task needs: small, medium, or large.
 
-A plan exists to make scope visible. Visibility makes it easier to say no to nearby work.
+Small, clear changes need visible intent and verification. Risky, broad, or unclear changes need an explicit plan that states what will change, what will not change, and how to verify the result.
 
 ## 2. Context Should Be Small and Relevant
 
@@ -34,7 +34,7 @@ The review must compare the diff against the approved plan. Any change outside t
 
 ## 6. Leave Checkpoints
 
-Every run produces artifacts: task, plan, context, verification, review, summary. These files reduce the cost of starting a new session and make work resumable across tools and time.
+Standard and full runs produce artifacts such as task, plan, context, verification, review, and summary. These files reduce the cost of starting a new session and make work resumable across tools and time.
 
 ## 7. Record Decisions
 
@@ -43,3 +43,7 @@ When an important architectural or behavioral decision is made, record it in DEC
 ## 8. Do Not Expand Scope
 
 If you discover additional work that needs doing while implementing a plan, record it as a new task. Do not fold it into the current plan. The current plan's scope is a contract.
+
+## 9. Do Not Loop
+
+If the same action fails three times in a row with the same result, stop. Record what failed, move on to the rest of the plan, and report the unresolved failure at the end. Repeating identical attempts wastes resources without producing new information.
