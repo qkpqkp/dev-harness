@@ -12,7 +12,17 @@ Describe what this project does and who it serves.
 
 - Keep context concise.
 - Prefer minimal patches.
+- Match process weight to task risk: small tasks need less ceremony, larger or unclear tasks need a short plan.
+- Escalate when scope grows or uncertainty appears.
 - Record important decisions in DECISIONS.md.
+
+## Behavior Policy
+
+Customize how agents handle stuck situations. Adjust thresholds and actions to match your preferences.
+
+- **Max retries**: 3 (how many times to retry the same fix before moving on)
+- **On blocked**: skip and report (what to do when stuck: skip and report / stop and ask / keep trying)
+- **Report in**: summary.md (where to record unresolved failures)
 `;
 
 export const CHECKS_TEMPLATE = `# Checks
@@ -57,24 +67,21 @@ Generated workflow runs are indexed here.
 export const DEVH_SECTION_START = "<!-- devh:start -->";
 export const DEVH_SECTION_END = "<!-- devh:end -->";
 
-const AGENT_WORKFLOW_BODY = `## Dev Harness Workflow
+const AGENT_WORKFLOW_BODY = `## Agent Rules
 
-Read \`.agent-harness/philosophy.md\` for the full set of principles. Key points:
+Read \`.agent-harness/philosophy.md\` for the full principles, then follow these rules:
 
-1. **Plan before you edit.** Create or read the plan in \`.agent-harness/runs/<current>/plan.md\` before making changes.
-2. **Context first.** Run \`devh context\` and read the output before touching files.
-3. **Scope is a contract.** Only implement what is in the plan scope. If you find more work, record it as a new task — do not fold it in.
-4. **Verify after changes.** Run \`devh verify\` and address any failures before proceeding.
-5. **Review the diff.** Run \`devh review\` and check for out-of-scope changes.
-6. **Record decisions in** \`.agent-harness/DECISIONS.md\`.
-
-## Hard Rules
-
-- Do not implement anything outside the plan scope.
-- Do not skip verification.
-- Do not skip diff review.
-- If scope is unclear, ask before proceeding.
+- Classify task risk before editing: small, medium, or large.
+- Use the lightest process that fits the risk.
+- For small clear tasks, a full plan is optional unless scope is unclear.
+- For medium or large tasks, create or update a short plan before editing.
+- Understand local context before changing files.
+- Keep changes inside the agreed scope.
+- If scope grows, stop and update the plan or ask.
+- Run relevant verification before finishing.
+- Review your diff before the final response.
 - Update docs and tests when behavior changes.
+- Record durable decisions in \`.agent-harness/DECISIONS.md\` when behavior or architecture changes.
 
 ## Quick Reference
 

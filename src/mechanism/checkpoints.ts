@@ -55,16 +55,33 @@ export function parseNonGoalsFromPlan(planContent: string): string[] {
 }
 
 export function extractFilePatterns(items: string[]): RegExp[] {
-  return items
-    .map((item) => {
-      const cleaned = item.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      try {
-        return new RegExp(cleaned, "i");
-      } catch {
-        return null;
+  const patterns: RegExp[] = [];
+
+  for (const item of items) {
+    const backtickMatches = item.match(/`([^`]+)`/g);
+    if (backtickMatches && backtickMatches.length > 0) {
+      for (const m of backtickMatches) {
+        const inner = m.slice(1, -1).trim();
+        if (/[/\\]/.test(inner) || /\.\w+$/.test(inner)) {
+          const escaped = inner.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          try {
+            patterns.push(new RegExp(escaped, "i"));
+          } catch {
+            // skip invalid
+          }
+        }
       }
-    })
-    .filter((r): r is RegExp => r !== null);
+    } else {
+      const escaped = item.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      try {
+        patterns.push(new RegExp(escaped, "i"));
+      } catch {
+        // skip invalid
+      }
+    }
+  }
+
+  return patterns;
 }
 
 export function compareChangesToScope(
@@ -85,6 +102,10 @@ export function compareChangesToScope(
   const nonGoalPatterns = extractFilePatterns(nonGoalItems);
 
   for (const file of changedFiles) {
+    if (file.startsWith(".agent-harness/") || file === ".agent-harness") {
+      continue;
+    }
+
     const matchesScope = scopePatterns.some((p) => p.test(file));
     const matchesNonGoal = nonGoalPatterns.some((p) => p.test(file));
 
